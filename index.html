@@ -1,77 +1,356 @@
-<form id="signup-form" class="space-y-6" onsubmit="submitForm(event)">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label for="name" class="block text-gray-700 font-medium mb-2">이름</label>
-      <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-blue-900" placeholder="홍길동" required>
-    </div>
-    <div>
-      <label for="email" class="block text-gray-700 font-medium mb-2">이메일</label>
-      <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-blue-900" placeholder="example@email.com" required>
-    </div>
-  </div>
-  <div>
-    <label for="phone" class="block text-gray-700 font-medium mb-2">연락처</label>
-    <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-blue-900" placeholder="010-1234-5678" required>
-  </div>
-  <div>
-    <label for="company" class="block text-gray-700 font-medium mb-2">회사/직함</label>
-    <input type="text" id="company" name="company" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-blue-900" placeholder="회사명 / 직함">
-  </div>
-  <div>
-    <label for="message" class="block text-gray-700 font-medium mb-2">신청 동기 (선택사항)</label>
-    <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-blue-900" placeholder="AI 학습에 관심을 갖게 된 계기나 기대하는 점을 자유롭게 작성해 주세요."></textarea>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <button type="submit" class="w-full bg-red-600 text-white py-4 !rounded-button font-bold text-lg hover:bg-red-700 transition whitespace-nowrap text-center border-2 border-white">신규멤버 신청</button>
-    <a href="https://dimabulsa.kr/product/mnc-ai7-again/" class="w-full bg-blue-900 text-white py-4 !rounded-button font-bold text-lg hover:bg-blue-800 transition whitespace-nowrap text-center border-2 border-white">재수강 신청</a>
-  </div>
-</form>
-
-<script>
-  function submitForm(event) {
-    event.preventDefault();
-
-    const form = document.getElementById('signup-form');
-    const formData = new FormData(form);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      company: formData.get('company'),
-      message: formData.get('message')
-    };
-
-    // Replace this URL with your Google Apps Script Web App URL after Step 2
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyYcqof_1fP11LF2_Hwc8CwdTmfe2cU89ZO01_T4Tiy6UbYFJW840ynMUv9ZsChlOEzGQ/exec';
-
-    fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (result.status === 'success') {
-        const formSuccess = document.createElement('div');
-        formSuccess.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4';
-        formSuccess.innerHTML = '<strong>신청 완료!</strong> 신청이 성공적으로 접수되었습니다. 곧 담당자가 연락드릴 예정입니다.';
-        const existingMessages = document.querySelectorAll('.bg-red-100, .bg-green-100');
-        existingMessages.forEach(msg => msg.remove());
-        document.getElementById('signup-form').appendChild(formSuccess);
-        form.reset();
-      } else {
-        throw new Error('Submission failed');
-      }
-    })
-    .catch(error => {
-      const formError = document.createElement('div');
-      formError.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4';
-      formError.innerHTML = '<strong>입력 오류!</strong> 신청 중 오류가 발생했습니다. 다시 시도해 주세요.';
-      const existingMessages = document.querySelectorAll('.bg-red-100, .bg-green-100');
-      existingMessages.forEach(msg => msg.remove());
-      document.getElementById('signup-form').appendChild(formError);
-    });
-  }
-</script>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민앤초이스 AI 공부방 7기 멤버 모집</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#FFD700',secondary:'#FF0000'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Noto Sans KR', sans-serif;
+}
+input:focus {
+outline: none;
+}
+html {
+scroll-behavior: smooth;
+}
+</style>
+</head>
+<body class="bg-gray-50">
+<!-- 헤더 -->
+<header class="bg-white shadow-md">
+<div class="container mx-auto px-4 py-4 flex justify-between items-center">
+<div class="text-3xl">
+<img src="https://static.readdy.ai/image/bf44eae05b160a44e8e7e86d1cd3540f/13274e0ae0d842f9cf983ada4b2a31bc.jpeg" alt="민앤초이스 로고" class="h-12">
+</div>
+<nav class="hidden md:flex space-x-8">
+<a href="#program" class="text-gray-700 hover:text-blue-900 font-medium">프로그램 소개</a>
+<a href="#curriculum" class="text-gray-700 hover:text-blue-900 font-medium">커리큘럼</a>
+<a href="#tools" class="text-gray-700 hover:text-blue-900 font-medium">AI 도구</a>
+<a href="#benefits" class="text-gray-700 hover:text-blue-900 font-medium">혜택</a>
+</nav>
+<div class="flex space-x-2">
+<a href="https://dimabulsa.kr/product/mnc-ai7-new/" class="bg-red-600 text-white px-6 py-2 !rounded-button font-medium hover:bg-red-700 transition whitespace-nowrap inline-block border-2 border-white">신규멤버 신청</a>
+<a href="https://dimabulsa.kr/product/mnc-ai7-again/" class="bg-blue-900 text-white px-6 py-2 !rounded-button font-medium hover:bg-blue-800 transition whitespace-nowrap inline-block border-2 border-white">재수강 신청</a>
+</div>
+</div>
+</header>
+<!-- 히어로 섹션 -->
+<section class="text-white py-16 relative" style="background-image: url('https://static.readdy.ai/image/bf44eae05b160a44e8e7e86d1cd3540f/acdf65fdcfb157d65b2a7d210bb092e5.png'); background-size: cover; background-position: center; background-color: #0f172a;">
+<div class="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-blue-900/40"></div>
+<div class="container mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
+<div class="w-full md:w-1/2 mb-10 md:mb-0">
+<div class="inline-block bg-white text-red-600 font-bold px-12 py-4 rounded-full mb-6 text-2xl">7기 멤버 모집</div>
+<h1 class="text-6xl md:text-7xl font-bold text-primary mb-6">민앤초이스<br>AI 공부방</h1>
+<p class="text-3xl mb-8">인공지능 혁명이 쓰나미로 몰려오는 시대,<br>업무도 마케팅도 파괴적인 변화가 요구됩니다.</p>
+<div class="bg-white/90 backdrop-blur-sm text-blue-900 p-6 rounded-lg mb-8">
+<div class="text-3xl font-bold mb-2">2025.4.12~6.28 (매주 토)</div>
+<div class="text-red-600 font-bold text-2xl">밤 8:30, Zoom으로! (12주)</div>
+</div>
+<div class="flex space-x-4">
+<a href="https://dimabulsa.kr/product/mnc-ai7-new/" class="bg-red-600 text-white px-16 py-6 !rounded-button font-medium text-3xl hover:bg-red-700 transition whitespace-nowrap inline-block border-2 border-white shadow-lg">신규멤버 신청</a>
+<a href="https://dimabulsa.kr/product/mnc-ai7-again/" class="bg-blue-900 text-white px-16 py-6 !rounded-button font-medium text-3xl hover:bg-blue-800 transition whitespace-nowrap inline-block border-2 border-white shadow-lg">재수강 신청</a>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="relative">
+<img src="https://static.readdy.ai/image/bf44eae05b160a44e8e7e86d1cd3540f/1c4260fef03a5cf34525cd758fa74139.png" alt="민앤초이스 코치진" class="rounded-lg shadow-xl mx-auto object-top">
+</div>
+</div>
+</div>
+</section>
+<!-- 프로그램 소개 섹션 -->
+<section id="program" class="py-16 bg-white">
+<div class="container mx-auto px-4">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-blue-900 mb-4">프로그램 소개</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">디지털 마케팅의 선진 기법을 늘 선두에서 연구해온 민진홍-최규문 코치가 다시 한 팀을 꾸려 AI 프롬프트를 실전 마케팅과 세일즈에 활용할 수 있는 기법을 함께 공부하고 아낌없이 나눕니다!</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-gray-50 p-8 rounded-lg shadow-md">
+<div class="w-16 h-16 bg-blue-900 text-white rounded-full flex items-center justify-center mb-6">
+<i class="ri-ai-generate-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-bold text-blue-900 mb-4">AI 시대의 생산성 혁명</h3>
+<p class="text-gray-700">지난 2년 3개월 남짓 생성AI의 열기는 혁명이라 부를 정도로 전세계를 변화의 소용돌이에 빠뜨리고, 그 충격은 "총성 없는 3차 세계대전"으로 불릴 정도입니다. 앞으로 새로운 AI 시대로의 전환은 시간 문제일 뿐입니다.</p>
+</div>
+<div class="bg-gray-50 p-8 rounded-lg shadow-md">
+<div class="w-16 h-16 bg-blue-900 text-white rounded-full flex items-center justify-center mb-6">
+<i class="ri-rocket-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-bold text-blue-900 mb-4">실무 중심 AI 학습</h3>
+<p class="text-gray-700">그동안 프롬프트 명령어 사용법 중심으로 진행하던 AI 학습 요구와 커리큘럼도 이제는 기업 내 실무 자동화와 생산성 향상을 위해 필요한 각종 도구 사용법을 중심으로 My GPTs를 직접 개발해서 쓰는 방법과 API 연동 방법을 배웁니다.</p>
+</div>
+</div>
+<div class="mt-12 bg-blue-900 text-white p-8 rounded-lg">
+<h3 class="text-2xl font-bold mb-4">민앤초이스 AI 공부방이란?</h3>
+<p class="mb-4">챗GPT, 클로드, 제미나이, 라마, 그록과 같은 LLM 서비스에서부터 달리3, 미드저니, 리크래프트를 비롯해 다양한 생성AI에 대한 실무 사용법과 프롬프트 명령 기법을 공유하고, 하루가 다르게 새롭게 쏟아지고 발전하는 인공지능 기술의 최근 동향과 새로운 뉴스 정보를 나누고 함께 공부하는 연구 학습 커뮤니티입니다.</p>
+<p>2025년 4월 12일부터 2025년 6월 28일까지 12주, 3개월간! 12회(총 36시간)에 걸쳐 매주 토요일 밤 8시 30분에 줌으로 만납니다!!</p>
+</div>
+</div>
+</section>
+<!-- 커리큘럼 섹션 -->
+<section id="curriculum" class="py-16 bg-gray-50">
+<div class="container mx-auto px-4">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-blue-900 mb-4">커리큘럼</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">전 세계 AI 전문가와 마케터들이 직접 도입하고 있는 최신 업무 자동화 기법을 연구하고 마케팅과 콘텐츠 제작 업무에 AI를 적용하기 위한 최신 기술과 팁을 함께 공부합니다.</p>
+</div>
+<div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+<div class="bg-blue-900 text-white p-4">
+<h3 class="text-xl font-bold">1부: AI 콘텐츠 제작 실전기술반</h3>
+</div>
+<div class="p-6">
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</div>
+<p>프롬프트 엔지니어링 기초와 고급 기법</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</div>
+<p>마케팅 콘텐츠 제작을 위한 AI 활용법</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</div>
+<p>My GPT를 활용해 내 책 출간하기</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</div>
+<p>AI를 활용한 광고 CF 동영상 시안 만들기</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-lg overflow-hidden">
+<div class="bg-red-600 text-white p-4">
+<h3 class="text-xl font-bold">2부: AI 마케팅 실전 전략응용반</h3>
+</div>
+<div class="p-6">
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</div>
+<p>AI를 활용한 마케팅 전략 수립</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</div>
+<p>고객 데이터 분석과 인사이트 도출</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</div>
+<p>My GPTs 개발 및 API 연동 실습</p>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</div>
+<p>RAG 기반 응답 챗봇 구축하기</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- AI 도구 섹션 -->
+<section id="tools" class="py-16 bg-white">
+<div class="container mx-auto px-4">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-blue-900 mb-4">다양한 생성 AI 도구 및 서비스 사용법</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">실무에 바로 적용 가능한 다양한 AI 도구들의 사용법을 배우고 실습합니다.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-gray-50 p-6 rounded-lg shadow-md">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4">
+<i class="ri-chat-4-line ri-xl"></i>
+</div>
+<h3 class="text-lg font-bold text-blue-900 mb-3">텍스트 생성</h3>
+<ul class="space-y-2 text-gray-700">
+<li>챗GPT (오픈AI)</li>
+<li>Gemini (구글)</li>
+<li>CoPilot (MS)</li>
+<li>Claude (엔트로픽)</li>
+<li>글록3 (xAI)</li>
+</ul>
+</div>
+<div class="bg-gray-50 p-6 rounded-lg shadow-md">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4">
+<i class="ri-image-line ri-xl"></i>
+</div>
+<h3 class="text-lg font-bold text-blue-900 mb-3">이미지 생성</h3>
+<ul class="space-y-2 text-gray-700">
+<li>달리3 (오픈AI)</li>
+<li>FLUX (스테이블디퓨전)</li>
+<li>미드저니</li>
+<li>ImageFX (구글)</li>
+<li>파이어플라이 (Adobe)</li>
+</ul>
+</div>
+<div class="bg-gray-50 p-6 rounded-lg shadow-md">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4">
+<i class="ri-edit-2-line ri-xl"></i>
+</div>
+<h3 class="text-lg font-bold text-blue-900 mb-3">이미지 편집</h3>
+<ul class="space-y-2 text-gray-700">
+<li>Clipdrop</li>
+<li>Reclaft</li>
+<li>Canva</li>
+<li>CapCut (캡컷)</li>
+<li>Firefly (어도비)</li>
+</ul>
+</div>
+<div class="bg-gray-50 p-6 rounded-lg shadow-md">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4">
+<i class="ri-video-line ri-xl"></i>
+</div>
+<h3 class="text-lg font-bold text-blue-900 mb-3">비디오 생성</h3>
+<ul class="space-y-2 text-gray-700">
+<li>Sora</li>
+<li>VideoFX</li>
+<li>Gen3</li>
+<li>Vrew</li>
+<li>HeyGen, Kling, LumaAI</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- 혜택 섹션 -->
+<section id="benefits" class="py-16 bg-blue-900 text-white">
+<div class="container mx-auto px-4">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-primary mb-4">특별 혜택</h2>
+<p class="text-gray-200 max-w-3xl mx-auto">7기 참가자만을 위한 특별한 혜택을 제공합니다!</p>
+</div>
+<div class="bg-white text-blue-900 p-8 rounded-lg shadow-lg">
+<h3 class="text-2xl font-bold mb-6 text-center">보너스 혜택</h3>
+<div class="text-lg mb-6 text-center">
+<p class="font-bold text-red-600">1기(36시간) + 2기(24시간) + 3기(30시간) + 4기(30시간) + 5기(30시간) + 6기(36시간)</p>
+<p class="text-xl font-bold mt-4">= 186시간 수업 녹화 동영상 무료 시청권!!</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+<div class="bg-gray-50 p-6 rounded-lg">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-video-chat-line ri-xl"></i>
+</div>
+<h4 class="text-lg font-bold text-center mb-3">실시간 Q&A</h4>
+<p class="text-gray-700 text-center">매주 수업 후 질의응답 시간 제공</p>
+</div>
+<div class="bg-gray-50 p-6 rounded-lg">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-group-line ri-xl"></i>
+</div>
+<h4 class="text-lg font-bold text-center mb-3">커뮤니티 액세스</h4>
+<p class="text-gray-700 text-center">AI 전문가 네트워크 참여 기회</p>
+</div>
+<div class="bg-gray-50 p-6 rounded-lg">
+<div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-file-list-3-line ri-xl"></i>
+</div>
+<h4 class="text-lg font-bold text-center mb-3">학습 자료 제공</h4>
+<p class="text-gray-700 text-center">프롬프트 템플릿 및 실습 자료 제공</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 신청 섹션 -->
+<section id="application-form" class="py-16 bg-gray-50">
+<div class="container mx-auto px-4">
+<div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+<div class="bg-blue-900 text-white p-6 text-center">
+<h2 class="text-3xl font-bold">지금 신청하기</h2>
+<p class="mt-2">3개월 투자로 누구보다도 빠르게 "AI시대 최고의 생산성 전문가"로 거듭 나세요.</p>
+</div>
+<div class="p-8">
+<div class="mb-8">
+<h3 class="text-xl font-bold text-blue-900 mb-4">교육 일정</h3>
+<div class="flex items-center mb-3">
+<div class="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center mr-4">
+<i class="ri-calendar-line ri-lg"></i>
+</div>
+<p class="text-gray-700"><span class="font-bold">기간:</span> 2025년 4월 12일 ~ 2025년 6월 28일 (12주)</p>
+</div>
+<div class="flex items-center mb-3">
+<div class="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center mr-4">
+<i class="ri-time-line ri-lg"></i>
+</div>
+<p class="text-gray-700"><span class="font-bold">시간:</span> 매주 토요일 밤 8시 30분 ~ 11시 30분 (3시간)</p>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center mr-4">
+<i class="ri-video-chat-line ri-lg"></i>
+</div>
+<p class="text-gray-700"><span class="font-bold">방식:</span> Zoom 온라인 실시간 강의 (총 36시간)</p>
+</div>
+</div>
+<div class="w-full overflow-hidden rounded-lg">
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeEHLh0hcYDoU4yhzpR59VsoB4Q15-WKzyTGlfpnd-S2guZkA/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0" class="mx-auto">로드 중…</iframe>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+<a href="https://dimabulsa.kr/product/mnc-ai7-new/" class="w-full bg-red-600 text-white py-4 !rounded-button font-bold text-lg hover:bg-red-700 transition whitespace-nowrap text-center border-2 border-white">신규멤버 신청</a>
+<a href="https://dimabulsa.kr/product/mnc-ai7-again/" class="w-full bg-blue-900 text-white py-4 !rounded-button font-bold text-lg hover:bg-blue-800 transition whitespace-nowrap text-center border-2 border-white">재수강 신청</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 푸터 -->
+<footer class="bg-blue-900 text-white py-12">
+<div class="container mx-auto px-4">
+<div class="flex flex-col md:flex-row justify-between mb-8">
+<div class="mb-8 md:mb-0">
+<div class="mb-4">
+<img src="https://static.readdy.ai/image/bf44eae05b160a44e8e7e86d1cd3540f/13274e0ae0d842f9cf983ada4b2a31bc.jpeg" alt="민앤초이스 로고" class="h-12">
+</div>
+<p class="max-w-xs text-gray-300">인공지능 시대를 선도하는 최고의 AI 교육 프로그램, 민앤초이스 AI 공부방</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+<div>
+<h4 class="text-lg font-bold mb-4">프로그램</h4>
+<ul class="space-y-2 text-gray-300">
+<li><a href="#program" class="hover:text-white">프로그램 소개</a></li>
+<li><a href="#curriculum" class="hover:text-white">커리큘럼</a></li>
+<li><a href="#tools" class="hover:text-white">AI 도구</a></li>
+<li><a href="#benefits" class="hover:text-white">혜택</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-4">문의</h4>
+<ul class="space-y-2 text-gray-300">
+<li class="flex items-center">
+<i class="ri-mail-line mr-2"></i>
+<a href="mailto:info@minchoice.co.kr" class="hover:text-white">info@minchoice.co.kr</a>
+</li>
+<li class="flex items-center">
+<i class="ri-phone-line mr-2"></i>
+<a href="tel:02-1234-5678" class="hover:text-white">02-1234-5678</a>
+</li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-4">팔로우</h4>
+<div class="flex space-x-4">
+<a href="#" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+<i class="ri-youtube-line ri-lg"></i>
+</a>
+<a href="#" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+<i class="ri-instagram-line ri-lg"></i>
+</a>
+<a href="#" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+<i class="ri-facebook-line ri-lg"></i>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+<p>© 2025 민앤초이스 AI 공부방. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</body>
+</html>
